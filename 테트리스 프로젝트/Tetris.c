@@ -326,8 +326,8 @@ void start() {
 
 	block t;	// 이동중인 블록
 	block temp;
-
-	while (1) {
+	block temp2; 
+	while(1) {
 		// 새 블록 생성
 		t.type = rand() % 7;
 		t.rotation = 0;
