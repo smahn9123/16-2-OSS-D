@@ -15,7 +15,7 @@
 #define DELAY 1
 
 // 게임판
-int board[BOARD_HEIGHT + 4][BOARD_WIDTH + 4];
+int board[BOARD_HEIGHT + 2][BOARD_WIDTH + 2];
 
 // 블록 정보
 typedef struct {
