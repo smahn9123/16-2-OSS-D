@@ -8,8 +8,8 @@
 #define BOARD_HEIGHT 20	// 게임판 높이
 
 // 게임판 위치 보정값
-#define BOARD_X	13
-#define BOARD_Y 0
+#define BOARD_X	1
+#define BOARD_Y 1
 
 // 블록 진행 속도
 #define DELAY 1
@@ -214,6 +214,28 @@ void cursorHide() {
 	CurInfo.dwSize = 1;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &CurInfo);
 };
+void title(void) { //게임시작화면
+	int x = 30; //타이틀화면이 표시되는 x좌표 
+	int y = 1; //타이틀화면이 표시되는 y좌표 
+	int cnt; //타이틀 프레임을 세는 변수  
+
+	gotoxy(x, y + 0); printf("□□□□□□□□□□□□□□□"); Sleep(100);
+	gotoxy(x, y + 1); printf("□□□□□□□□□□□□□□□"); Sleep(100);
+	gotoxy(x, y + 2); printf("□□□□              □□□□"); Sleep(100);
+	gotoxy(x, y + 3); printf("□□□□□□□□□□□□□□□"); Sleep(100);
+	gotoxy(x, y + 4); printf("□□□□□□□□□□□□□□□"); Sleep(100);
+	
+	gotoxy(x + 9, y + 2); printf("T E T R I S"); Sleep(100);
+	
+	gotoxy(x, y + 9); printf("  △   : Shift");
+	gotoxy(x, y + 10); printf("◁  ▷ : Left / Right");
+	gotoxy(x, y + 11); printf("  ▽   : Soft Drop");
+	gotoxy(x, y + 12); printf(" SPACE : Hard Drop");
+		
+
+	while (kbhit()) getch(); //버퍼에 기록된 키값을 버림 
+
+}
 
 // 게임판 출력
 void initBoard() {
@@ -443,6 +465,9 @@ void start() {
 }
 
 int main(void) {
+	// 타이틀 출력
+	title();
+	
 	// 커서 제거
 	cursorHide();
 	
