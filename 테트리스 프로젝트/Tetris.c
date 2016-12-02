@@ -11,6 +11,10 @@
 #define BOARD_X	1
 #define BOARD_Y 1
 
+// 다음블록위치 좌표 
+#define NEXT_X 18
+#define NEXT_Y 16
+
 // 블록 진행 속도
 #define DELAY 1
 
@@ -86,7 +90,7 @@ int blocks[7][4][4][4] = {
 	1, 1, 1, 0,
 	0, 0, 0, 0,
 	0, 0, 0, 0,
-	
+
 	0, 1, 0, 0,
 	1, 1, 0, 0,
 	0, 1, 0, 0,
@@ -113,7 +117,7 @@ int blocks[7][4][4][4] = {
 	0, 1, 0, 0,
 	0, 1, 0, 0,
 	0, 0, 0, 0,
-	
+
 	1, 1, 1, 0,
 	1, 0, 0, 0,
 	0, 0, 0, 0,
@@ -130,7 +134,7 @@ int blocks[7][4][4][4] = {
 	1, 1, 1, 0,
 	0, 0, 0, 0,
 	0, 0, 0, 0,
-	
+
 	0, 1, 0, 0,
 	0, 1, 0, 0,
 	1, 1, 0, 0,
@@ -140,7 +144,7 @@ int blocks[7][4][4][4] = {
 	0, 0, 1, 0,
 	0, 0, 0, 0,
 	0, 0, 0, 0,
-	
+
 	1, 1, 0, 0,
 	1, 0, 0, 0,
 	1, 0, 0, 0,
@@ -189,7 +193,7 @@ int blocks[7][4][4][4] = {
 	1, 1, 0, 0,
 	1, 0, 0, 0,
 	0, 0, 0, 0,
-}; 
+};
 
 // 커서 이동 함수
 void gotoxy(int x, int y)
@@ -224,14 +228,23 @@ void title(void) { //게임시작화면
 	gotoxy(x, y + 2); printf("□□□□              □□□□"); Sleep(100);
 	gotoxy(x, y + 3); printf("□□□□□□□□□□□□□□□"); Sleep(100);
 	gotoxy(x, y + 4); printf("□□□□□□□□□□□□□□□"); Sleep(100);
-	
+
 	gotoxy(x + 9, y + 2); printf("T E T R I S"); Sleep(100);
-	
-	gotoxy(x, y + 9); printf("  △   : Shift");
-	gotoxy(x, y + 10); printf("◁  ▷ : Left / Right");
-	gotoxy(x, y + 11); printf("  ▽   : Soft Drop");
-	gotoxy(x, y + 12); printf(" SPACE : Hard Drop");
-		
+
+	gotoxy(x, y + 8); printf("  △   : Shift");
+	gotoxy(x, y + 9); printf("◁  ▷ : Left / Right");
+	gotoxy(x, y + 10); printf("  ▽   : Soft Drop");
+	gotoxy(x, y + 11); printf(" SPACE : Hard Drop");
+
+	gotoxy(x, y + NEXT_X - 4); printf("    □□□□□□□");
+	gotoxy(x, y + NEXT_X - 3); printf("    □          □");
+	gotoxy(x, y + NEXT_X - 2); printf("    □          □");
+	gotoxy(x, y + NEXT_X - 1); printf("    □          □");
+	gotoxy(x, y + NEXT_X); printf("    □          □");
+	gotoxy(x, y + NEXT_X + 1); printf("    □          □");
+	gotoxy(x, y + NEXT_X + 2); printf("    □          □");
+	gotoxy(x, y + NEXT_X + 3); printf("    □□□□□□□");
+
 
 	while (kbhit()) getch(); //버퍼에 기록된 키값을 버림 
 
@@ -318,7 +331,7 @@ void lineCheck() {
 		}
 	}
 	/* 위의 결과를 콘솔창 출력에 반영 */
-	if (remap) { 
+	if (remap) {
 		for (int i = BOARD_HEIGHT; i > 0; --i) {
 			gotoxy(2 * (BOARD_X + 1), BOARD_Y + i);
 			for (int j = 1; j <= BOARD_WIDTH; ++j) {
@@ -347,15 +360,26 @@ void start() {
 	srand((unsigned)time(NULL));
 
 	block t;	// 이동중인 블록
+	block next;
 	block temp;
-	block temp2; 
-	while(1) {
+	block temp2;
+
+	next.type = rand() % 7;
+	next.rotation = 0;
+	next.curX = NEXT_X;
+	next.curY = NEXT_Y;
+	while (1) {
 		// 새 블록 생성
-		t.type = rand() % 7;
+		t.type = next.type;
 		t.rotation = 0;
 		t.curX = BOARD_WIDTH / 2;
 		t.curY = 0;
 		drawBlock(t);
+
+		// 다음블럭 생성
+		removeBlock(next);
+		next.type = rand() % 7;
+		drawBlock(next);
 
 		// 타이머 생성
 		time_t timer;
@@ -436,14 +460,14 @@ void start() {
 					break;
 				case SPACE:
 					temp = t;
-					while(1){
+					while (1){
 						temp2 = temp;
 						temp.curY++;
-						if(collisionCheck(temp)) {
-						/* Bug */
-						//	if (t.curY <= 0)
-						//		return 2;
-						/*******/
+						if (collisionCheck(temp)) {
+							/* Bug */
+							//	if (t.curY <= 0)
+							//		return 2;
+							/*******/
 							mergeBlock(temp2);
 							merged = 1;
 							break;
@@ -467,10 +491,10 @@ void start() {
 int main(void) {
 	// 타이틀 출력
 	title();
-	
+
 	// 커서 제거
 	cursorHide();
-	
+
 	// 게임판 출력
 	initBoard();
 
