@@ -412,6 +412,26 @@ void start() {
 					t = temp;
 					drawBlock(t);
 					break;
+				case SPACE:
+					temp = t;
+					while(1){
+						temp2 = temp;
+						temp.curY++;
+						if(collisionCheck(temp)) {
+						/* Bug */
+						//	if (t.curY <= 0)
+						//		return 2;
+						/*******/
+							mergeBlock(temp2);
+							merged = 1;
+							break;
+						}
+					}
+					time(&timer);	// Å¸ÀÌ¸Ó ÃÊ±âÈ­
+					removeBlock(t);
+					t = temp2;
+					drawBlock(t);
+					break;
 				}
 
 				// 블록 안착시 새 블록 생성
