@@ -214,6 +214,7 @@ void cursorHide() {
 	CurInfo.dwSize = 1;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &CurInfo);
 };
+
 void title(void) { //게임시작화면
 	int x = 30; //타이틀화면이 표시되는 x좌표 
 	int y = 1; //타이틀화면이 표시되는 y좌표 
@@ -239,6 +240,15 @@ void title(void) { //게임시작화면
 
 // 게임판 출력
 void initBoard() {
+	// 게임판 초기화
+	for (int i = 0; i < BOARD_HEIGHT + 2; ++i) {
+		gotoxy(2 * (BOARD_X + 1), i);
+		for (int j = 1; j < BOARD_WIDTH + 1; ++j) {
+			board[i][j] = 0;
+			printf("  ");
+		}
+	}
+
 	// 왼쪽, 오른쪽 벽
 	for (int i = 0; i < BOARD_HEIGHT + 2; ++i) {
 		board[i][0] = 1;
@@ -250,7 +260,6 @@ void initBoard() {
 	}
 	// 위, 아래 벽
 	for (int i = 0; i < BOARD_WIDTH + 2; ++i) {
-		board[0][i] = 1;
 		board[BOARD_HEIGHT + 1][i] = 1;
 		gotoxy(2 * (BOARD_X + i), BOARD_Y);
 		printf("■");
@@ -342,7 +351,7 @@ void mergeBlock(block t) {
 }
 
 // 게임 시작 (return 2 : 게임 오버)
-void start() {
+int start() {
 
 	srand((unsigned)time(NULL));
 
@@ -440,10 +449,8 @@ void start() {
 						temp.curY++;
 						if (collisionCheck(temp)) {
 							drawBlock(t);
-							/* Bug */
-							//	if (t.curY <= 0)
-							//		return 2;
-							/*******/
+							if (t.curY <= 0)
+								return 2;
 							mergeBlock(t);
 							merged = 1;
 							break;
@@ -461,20 +468,46 @@ void start() {
 			}
 		}
 	}
+	return 0;
+}
+
+// 게임 오버 화면
+int gameOver() {
+	char retry;
+	gotoxy(2 * (BOARD_X + BOARD_WIDTH / 2 - 3), BOARD_HEIGHT / 2);
+	printf("G A M E   O V E R ");
+	gotoxy(2 * (BOARD_X + BOARD_WIDTH / 2 - 3), BOARD_HEIGHT / 2 + 1);
+	printf(" Try Again? (Y/N)");
+	while (1) {
+		retry = _getch();
+		if (retry == 'Y' || retry == 'y')
+			return 1;
+		if (retry == 'N' || retry == 'n')
+			return 0;
+	}
 }
 
 int main(void) {
+	int status;
 	// 타이틀 출력
 	title();
 
 	// 커서 제거
 	cursorHide();
+	while (1) {
+		// 게임판 출력
+		initBoard();
 
-	// 게임판 출력
-	initBoard();
+		// 게임 시작
+		status = start();
 
-	// 게임 시작
-	start();
-
+		// 게임 오버
+		if (status == 2) {
+			int retry = gameOver();
+			if (!retry)
+				break;
+		}
+	}
+	
 	return 0;
 }
