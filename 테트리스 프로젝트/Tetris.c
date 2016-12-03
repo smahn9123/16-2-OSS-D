@@ -11,10 +11,6 @@
 #define BOARD_X	1
 #define BOARD_Y 1
 
-// 다음블록위치 좌표 
-#define NEXT_X 18
-#define NEXT_Y 16
-
 // 블록 진행 속도
 #define DELAY 1
 
@@ -231,19 +227,10 @@ void title(void) { //게임시작화면
 
 	gotoxy(x + 9, y + 2); printf("T E T R I S"); Sleep(100);
 
-	gotoxy(x, y + 8); printf("  △   : Shift");
-	gotoxy(x, y + 9); printf("◁  ▷ : Left / Right");
-	gotoxy(x, y + 10); printf("  ▽   : Soft Drop");
-	gotoxy(x, y + 11); printf(" SPACE : Hard Drop");
-
-	gotoxy(x, y + NEXT_X - 4); printf("    □□□□□□□");
-	gotoxy(x, y + NEXT_X - 3); printf("    □          □");
-	gotoxy(x, y + NEXT_X - 2); printf("    □          □");
-	gotoxy(x, y + NEXT_X - 1); printf("    □          □");
-	gotoxy(x, y + NEXT_X); printf("    □          □");
-	gotoxy(x, y + NEXT_X + 1); printf("    □          □");
-	gotoxy(x, y + NEXT_X + 2); printf("    □          □");
-	gotoxy(x, y + NEXT_X + 3); printf("    □□□□□□□");
+	gotoxy(x, y + 9); printf("  △   : Shift");
+	gotoxy(x, y + 10); printf("◁  ▷ : Left / Right");
+	gotoxy(x, y + 11); printf("  ▽   : Soft Drop");
+	gotoxy(x, y + 12); printf(" SPACE : Hard Drop");
 
 
 	while (kbhit()) getch(); //버퍼에 기록된 키값을 버림 
@@ -360,26 +347,15 @@ void start() {
 	srand((unsigned)time(NULL));
 
 	block t;	// 이동중인 블록
-	block next;
 	block temp;
 	block temp2;
-
-	next.type = rand() % 7;
-	next.rotation = 0;
-	next.curX = NEXT_X;
-	next.curY = NEXT_Y;
 	while (1) {
 		// 새 블록 생성
-		t.type = next.type;
+		t.type = rand() % 7;
 		t.rotation = 0;
 		t.curX = BOARD_WIDTH / 2;
 		t.curY = 0;
 		drawBlock(t);
-
-		// 다음블럭 생성
-		removeBlock(next);
-		next.type = rand() % 7;
-		drawBlock(next);
 
 		// 타이머 생성
 		time_t timer;
