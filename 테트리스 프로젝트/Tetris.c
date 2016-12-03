@@ -348,7 +348,7 @@ void start() {
 
 	block t;	// 이동중인 블록
 	block temp;
-	block temp2;
+
 	while (1) {
 		// 새 블록 생성
 		t.type = rand() % 7;
@@ -367,7 +367,7 @@ void start() {
 
 			time(&curTime);	// 시간 체크
 
-			// 시간이 다 됐을 시
+							// 시간이 다 됐을 시
 			if (curTime - timer >= DELAY) {
 				timer = curTime;
 
@@ -435,24 +435,23 @@ void start() {
 					drawBlock(t);
 					break;
 				case SPACE:
-					temp = t;
-					while (1){
-						temp2 = temp;
+					while (1) {
+						temp = t;
 						temp.curY++;
 						if (collisionCheck(temp)) {
+							drawBlock(t);
 							/* Bug */
 							//	if (t.curY <= 0)
 							//		return 2;
 							/*******/
-							mergeBlock(temp2);
+							mergeBlock(t);
 							merged = 1;
 							break;
 						}
+						removeBlock(t);
+						t = temp;
 					}
 					time(&timer);	// Å¸ÀÌ¸Ó ÃÊ±âÈ­
-					removeBlock(t);
-					t = temp2;
-					drawBlock(t);
 					break;
 				}
 
