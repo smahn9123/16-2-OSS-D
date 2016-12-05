@@ -378,6 +378,7 @@ int start() {
 	next.curY = NEXT_Y;
 	
 	while (1) {
+		// 새 블록 생성
 		t.type = next.type;
 		t.rotation = 0;
 		t.curX = BOARD_WIDTH / 2;
